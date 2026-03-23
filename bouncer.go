@@ -20,11 +20,11 @@ import (
 	"text/template"
 	"time"
 
-	cache "github.com/migetapp/crowdsec-bouncer-traefik-plugin/pkg/cache"
-	captcha "github.com/migetapp/crowdsec-bouncer-traefik-plugin/pkg/captcha"
-	configuration "github.com/migetapp/crowdsec-bouncer-traefik-plugin/pkg/configuration"
-	ip "github.com/migetapp/crowdsec-bouncer-traefik-plugin/pkg/ip"
-	logger "github.com/migetapp/crowdsec-bouncer-traefik-plugin/pkg/logger"
+	cache "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin/pkg/cache"
+	captcha "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin/pkg/captcha"
+	configuration "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin/pkg/configuration"
+	ip "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin/pkg/ip"
+	logger "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin/pkg/logger"
 )
 
 const (

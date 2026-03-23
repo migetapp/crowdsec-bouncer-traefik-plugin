@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	logger "github.com/migetapp/crowdsec-bouncer-traefik-plugin/pkg/logger"
+	logger "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin/pkg/logger"
 )
 
 func getMinimalConfig() *Config {
