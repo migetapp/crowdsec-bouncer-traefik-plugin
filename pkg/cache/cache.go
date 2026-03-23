@@ -28,8 +28,9 @@ const (
 
 //nolint:gochecknoglobals
 var (
-	redis simpleredis.SimpleRedis
-	cache = ttl_map.New()
+	redis     simpleredis.SimpleRedis
+	cache     = ttl_map.New()
+	rangeTree = NewRangeTree()
 )
 
 type localCache struct{}
@@ -124,4 +125,26 @@ func (c *Client) Get(key string) (string, error) {
 func (c *Client) Set(key string, value string, duration int64) {
 	c.log.Debug(fmt.Sprintf("cache:Set key:%v value:%v duration:%vs", key, value, duration))
 	c.cache.set(key, value, duration)
+}
+
+// SetRange inserts a CIDR range decision into the range tree.
+func (c *Client) SetRange(cidr, value string, duration int64) {
+	c.log.Debug(fmt.Sprintf("cache:SetRange cidr:%v value:%v duration:%vs", cidr, value, duration))
+	rangeTree.Insert(cidr, value, duration)
+}
+
+// DeleteRange removes a CIDR range decision from the range tree.
+func (c *Client) DeleteRange(cidr string) {
+	c.log.Debug(fmt.Sprintf("cache:DeleteRange cidr:%v", cidr))
+	rangeTree.Delete(cidr)
+}
+
+// GetRange checks if an IP falls within any cached CIDR range.
+func (c *Client) GetRange(ip string) (string, error) {
+	value, found := rangeTree.Lookup(ip)
+	if found {
+		c.log.Debug(fmt.Sprintf("cache:GetRange ip:%v hit value:%v", ip, value))
+		return value, nil
+	}
+	return "", errors.New(CacheMiss)
 }

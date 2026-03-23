@@ -375,6 +375,12 @@ func (bouncer *Bouncer) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 
 	// Right here if we cannot join the stream we forbid the request to go on.
 	if bouncer.crowdsecMode == configuration.StreamMode || bouncer.crowdsecMode == configuration.AloneMode {
+		// Check range tree for CIDR-scoped decisions before allowing
+		if rangeValue, rangeErr := bouncer.cacheClient.GetRange(remoteIP); rangeErr == nil {
+			bouncer.log.Debug(fmt.Sprintf("ServeHTTP ip:%s range:hit isBanned:%v", remoteIP, rangeValue))
+			bouncer.handleRemediationServeHTTP(rw, req, remoteIP, rangeValue)
+			return
+		}
 		if isCrowdsecStreamHealthy {
 			bouncer.handleNextServeHTTP(rw, req, remoteIP)
 		} else {
@@ -657,11 +663,19 @@ func handleStreamCache(bouncer *Bouncer) error {
 			default:
 				bouncer.log.Info("handleStreamCache:unknownType " + decision.Type)
 			}
-			bouncer.cacheClient.Set(decision.Value, value, int64(duration.Seconds()))
+			if strings.EqualFold(decision.Scope, "Range") {
+				bouncer.cacheClient.SetRange(decision.Value, value, int64(duration.Seconds()))
+			} else {
+				bouncer.cacheClient.Set(decision.Value, value, int64(duration.Seconds()))
+			}
 		}
 	}
 	for _, decision := range stream.Deleted {
-		bouncer.cacheClient.Delete(decision.Value)
+		if strings.EqualFold(decision.Scope, "Range") {
+			bouncer.cacheClient.DeleteRange(decision.Value)
+		} else {
+			bouncer.cacheClient.Delete(decision.Value)
+		}
 	}
 	bouncer.log.Info("handleStreamCache:updated")
 	return nil
