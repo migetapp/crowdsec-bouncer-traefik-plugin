@@ -10,8 +10,8 @@ import (
 	"net/url"
 	"strings"
 
-	cache "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin/pkg/cache"
-	configuration "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin/pkg/configuration"
+	cache "github.com/migetapp/crowdsec-bouncer-traefik-plugin/pkg/cache"
+	configuration "github.com/migetapp/crowdsec-bouncer-traefik-plugin/pkg/configuration"
 )
 
 // Client Captcha client.
