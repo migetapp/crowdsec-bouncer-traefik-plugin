@@ -16,7 +16,7 @@ import (
 	"regexp"
 	"strings"
 
-	ip "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin/pkg/ip"
+	ip "github.com/migetapp/crowdsec-bouncer-traefik-plugin/pkg/ip"
 )
 
 // Enums for crowdsec mode.
